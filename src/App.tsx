@@ -3,8 +3,20 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import Landing from "./pages/Landing";
+import EnterName from "./pages/EnterName";
+import AppLayout from "./components/AppLayout";
+import Dashboard from "./pages/Dashboard";
+import RankersLibrary from "./pages/RankersLibrary";
+import StudyVault from "./pages/StudyVault";
+import Profile from "./pages/Profile";
+import AdminPanel from "./pages/AdminPanel";
+import AppAbout from "./pages/AppAbout";
+import Contribute from "./pages/Contribute";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import AdSenseDisclaimer from "./pages/AdSenseDisclaimer";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -15,8 +27,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/enter" element={<EnterName />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/adsense-disclaimer" element={<AdSenseDisclaimer />} />
+          <Route path="/app" element={<AppLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="library" element={<RankersLibrary />} />
+            <Route path="vault" element={<StudyVault />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="admin" element={<AdminPanel />} />
+            <Route path="about" element={<AppAbout />} />
+            <Route path="contribute" element={<Contribute />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -21,6 +21,9 @@ export interface UserProfile {
   bio: string;
   downloads: number;
   isAdmin: boolean;
+  bookmarks: string[]; // material IDs
+  streak: number;
+  lastStudyDate: string; // ISO date string
 }
 
 export interface AppSettings {
@@ -32,6 +35,7 @@ const VAULT_KEY = "rankers_vault";
 const PROFILE_KEY = "rankers_profile";
 const SETTINGS_KEY = "rankers_settings";
 const THEME_KEY = "rankers_theme";
+const TIMER_KEY = "rankers_timer";
 
 export function getMaterials(): Material[] {
   const data = localStorage.getItem(MATERIALS_KEY);
@@ -71,6 +75,61 @@ export function rateMaterial(id: string, rating: number) {
   saveMaterials(materials);
 }
 
+// Bookmarks
+export function toggleBookmark(materialId: string) {
+  const p = getProfile();
+  if (!p.bookmarks) p.bookmarks = [];
+  const idx = p.bookmarks.indexOf(materialId);
+  if (idx >= 0) p.bookmarks.splice(idx, 1);
+  else p.bookmarks.push(materialId);
+  saveProfile(p);
+}
+
+export function isBookmarked(materialId: string): boolean {
+  const p = getProfile();
+  return (p.bookmarks || []).includes(materialId);
+}
+
+export function getBookmarkedMaterials(): Material[] {
+  const p = getProfile();
+  const ids = p.bookmarks || [];
+  const materials = getMaterials();
+  return materials.filter((m) => ids.includes(m.id));
+}
+
+// Study streak
+export function updateStreak() {
+  const p = getProfile();
+  const today = new Date().toISOString().split("T")[0];
+  if (p.lastStudyDate === today) return; // already updated today
+
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+  if (p.lastStudyDate === yesterday) {
+    p.streak = (p.streak || 0) + 1;
+  } else {
+    p.streak = 1;
+  }
+  p.lastStudyDate = today;
+  saveProfile(p);
+}
+
+export function getStreak(): number {
+  const p = getProfile();
+  const today = new Date().toISOString().split("T")[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+  if (p.lastStudyDate === today || p.lastStudyDate === yesterday) return p.streak || 0;
+  return 0;
+}
+
+// Study timer
+export function getStudyTimer(): number {
+  return Number(localStorage.getItem(TIMER_KEY) || "0");
+}
+
+export function saveStudyTimer(seconds: number) {
+  localStorage.setItem(TIMER_KEY, String(seconds));
+}
+
 export function getVault(): VaultItem[] {
   const data = localStorage.getItem(VAULT_KEY);
   return data ? JSON.parse(data) : [];
@@ -92,7 +151,7 @@ export function deleteVaultItem(id: string) {
 
 export function getProfile(): UserProfile {
   const data = localStorage.getItem(PROFILE_KEY);
-  return data ? JSON.parse(data) : { name: "", bio: "", downloads: 0, isAdmin: false };
+  return data ? JSON.parse(data) : { name: "", bio: "", downloads: 0, isAdmin: false, bookmarks: [], streak: 0, lastStudyDate: "" };
 }
 
 export function saveProfile(profile: UserProfile) {

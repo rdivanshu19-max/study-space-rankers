@@ -41,6 +41,13 @@ const AppLayout = () => {
     return location.pathname.startsWith(path);
   };
 
+  const navBtnClass = (path: string) =>
+    `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+      isActive(path)
+        ? "sidebar-active"
+        : "text-sidebar-foreground hover:bg-sidebar-accent"
+    }`;
+
   return (
     <div className="min-h-screen flex bg-background">
       {/* Sidebar - desktop */}
@@ -54,11 +61,7 @@ const AppLayout = () => {
             <button
               key={item.url}
               onClick={() => navigate(item.url)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                isActive(item.url)
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent"
-              }`}
+              className={navBtnClass(item.url)}
             >
               <item.icon className="w-4 h-4" />
               {item.title}
@@ -67,18 +70,14 @@ const AppLayout = () => {
           {profile.isAdmin && (
             <button
               onClick={() => navigate("/app/admin")}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                isActive("/app/admin")
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent"
-              }`}
+              className={navBtnClass("/app/admin")}
             >
               <Shield className="w-4 h-4" /> Admin Panel
             </button>
           )}
         </nav>
         <div className="p-3 border-t border-sidebar-border space-y-2">
-          <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors">
+          <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200">
             {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             {theme === "light" ? "Dark Mode" : "Light Mode"}
           </button>
@@ -86,7 +85,7 @@ const AppLayout = () => {
             href="https://t.me/freematerialjeeneet"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200"
           >
             <Send className="w-4 h-4" /> Telegram
           </a>
@@ -107,11 +106,7 @@ const AppLayout = () => {
                 <button
                   key={item.url}
                   onClick={() => { navigate(item.url); setSidebarOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                    isActive(item.url)
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent"
-                  }`}
+                  className={navBtnClass(item.url)}
                 >
                   <item.icon className="w-4 h-4" />
                   {item.title}
@@ -120,18 +115,14 @@ const AppLayout = () => {
               {profile.isAdmin && (
                 <button
                   onClick={() => { navigate("/app/admin"); setSidebarOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                    isActive("/app/admin")
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent"
-                  }`}
+                  className={navBtnClass("/app/admin")}
                 >
                   <Shield className="w-4 h-4" /> Admin Panel
                 </button>
               )}
             </nav>
             <div className="p-3 border-t border-sidebar-border space-y-2">
-              <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors">
+              <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200">
                 {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 {theme === "light" ? "Dark Mode" : "Light Mode"}
               </button>
@@ -142,7 +133,6 @@ const AppLayout = () => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* Top bar */}
         <header className="h-14 border-b flex items-center px-4 gap-4 bg-card shrink-0">
           <button onClick={() => setSidebarOpen(true)} className="md:hidden text-foreground">
             <Menu className="w-5 h-5" />

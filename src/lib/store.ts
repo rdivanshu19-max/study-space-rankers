@@ -36,6 +36,45 @@ const PROFILE_KEY = "rankers_profile";
 const SETTINGS_KEY = "rankers_settings";
 const THEME_KEY = "rankers_theme";
 const TIMER_KEY = "rankers_timer";
+const WEEKLY_STATS_KEY = "rankers_weekly_stats";
+
+export interface DailyStudyTime {
+  date: string; // ISO date YYYY-MM-DD
+  seconds: number;
+}
+
+export function getWeeklyStudyStats(): DailyStudyTime[] {
+  const data = localStorage.getItem(WEEKLY_STATS_KEY);
+  const stats: DailyStudyTime[] = data ? JSON.parse(data) : [];
+  const today = new Date();
+  const days: DailyStudyTime[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split("T")[0];
+    const existing = stats.find((s) => s.date === dateStr);
+    days.push({ date: dateStr, seconds: existing?.seconds || 0 });
+  }
+  return days;
+}
+
+export function addStudyTimeToday(seconds: number) {
+  const data = localStorage.getItem(WEEKLY_STATS_KEY);
+  const stats: DailyStudyTime[] = data ? JSON.parse(data) : [];
+  const today = new Date().toISOString().split("T")[0];
+  const existing = stats.find((s) => s.date === today);
+  if (existing) {
+    existing.seconds += seconds;
+  } else {
+    stats.push({ date: today, seconds });
+  }
+  // keep only last 30 days
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  const cutoffStr = cutoff.toISOString().split("T")[0];
+  const filtered = stats.filter((s) => s.date >= cutoffStr);
+  localStorage.setItem(WEEKLY_STATS_KEY, JSON.stringify(filtered));
+}
 
 export function getMaterials(): Material[] {
   const data = localStorage.getItem(MATERIALS_KEY);

@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, ExternalLink, Star, Filter, Pin } from "lucide-react";
-import { getMaterials, rateMaterial, incrementDownloads, getSettings, MATERIAL_TYPES } from "@/lib/store";
+import { Search, ExternalLink, Star, Filter, Pin, Bookmark, BookmarkCheck } from "lucide-react";
+import { getMaterials, rateMaterial, incrementDownloads, getSettings, isBookmarked, toggleBookmark, MATERIAL_TYPES } from "@/lib/store";
 
 const RankersLibrary = () => {
   const [search, setSearch] = useState("");
   const [selectedType, setSelectedType] = useState<string>("All");
   const [materials, setMaterials] = useState(getMaterials());
+  const [, setTick] = useState(0);
   const settings = getSettings();
 
   const filtered = useMemo(() => {
@@ -30,11 +31,16 @@ const RankersLibrary = () => {
     window.open(link, "_blank");
   };
 
+  const handleBookmark = (id: string) => {
+    toggleBookmark(id);
+    setTick((t) => t + 1);
+  };
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold">Rankers <span className="gradient-text">Library</span></h1>
-        <p className="text-muted-foreground text-sm mt-1">Browse free study materials</p>
+        <h1 className="text-2xl md:text-3xl font-heading font-bold">Rankers <span className="gradient-text">Library</span></h1>
+        <p className="text-muted-foreground mt-1">Browse free study materials</p>
       </div>
 
       {/* Search & Filter */}
@@ -107,6 +113,13 @@ const RankersLibrary = () => {
                     <span className="text-xs text-muted-foreground ml-1">({avgRating(m.ratings)})</span>
                   </div>
                 )}
+                <button
+                  onClick={() => handleBookmark(m.id)}
+                  className="text-primary/50 hover:text-primary transition-colors"
+                  title={isBookmarked(m.id) ? "Remove bookmark" : "Bookmark"}
+                >
+                  {isBookmarked(m.id) ? <BookmarkCheck className="w-4 h-4 text-primary" /> : <Bookmark className="w-4 h-4" />}
+                </button>
                 <button
                   onClick={() => handleOpen(m.link)}
                   className="btn-gold text-xs px-3 py-1.5 rounded-md flex items-center gap-1"

@@ -1,14 +1,20 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Download, Star, Pin, Quote, TrendingUp, ExternalLink, Flame, Timer, Play, Pause, RotateCcw, Bookmark, BarChart3 } from "lucide-react";
-import { getMaterials, getProfile, getVault, getBookmarkedMaterials, getStreak, updateStreak, getStudyTimer, saveStudyTimer, addStudyTimeToday, getWeeklyStudyStats, MOTIVATIONAL_QUOTES } from "@/lib/store";
+import { getProfile, getVault, getBookmarkedMaterials, getStreak, updateStreak, getStudyTimer, saveStudyTimer, addStudyTimeToday, getWeeklyStudyStats, MOTIVATIONAL_QUOTES } from "@/lib/store";
+import { fetchMaterials, type Material } from "@/lib/supabase-materials";
 import WeeklyChart from "@/components/WeeklyChart";
 
 const Dashboard = () => {
   const profile = getProfile();
-  const materials = getMaterials();
   const vault = getVault();
   const bookmarkedMaterials = getBookmarkedMaterials();
+
+  const [materials, setMaterials] = useState<Material[]>([]);
+
+  useEffect(() => {
+    fetchMaterials().then(setMaterials);
+  }, []);
 
   const quote = useMemo(() => MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)], []);
   const pinnedMaterials = materials.filter((m) => m.pinned);
@@ -19,7 +25,6 @@ const Dashboard = () => {
 
   const [timerSeconds, setTimerSeconds] = useState(getStudyTimer());
   const [timerRunning, setTimerRunning] = useState(false);
-  const lastTickRef = useState(0);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -28,7 +33,6 @@ const Dashboard = () => {
         setTimerSeconds((prev) => {
           const next = prev + 1;
           saveStudyTimer(next);
-          // Save 1 second to weekly stats every tick
           addStudyTimeToday(1);
           return next;
         });

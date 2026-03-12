@@ -1,16 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Mail, Send, BookOpen, DollarSign, Sparkles, Copy, Check } from "lucide-react";
+import { Heart, Mail, Send, BookOpen, DollarSign, Sparkles, QrCode } from "lucide-react";
+import upiQrImage from "@/assets/upi-qr-placeholder.png";
 
 const Contribute = () => {
   const [tab, setTab] = useState<"materials" | "money">("materials");
-  const [copied, setCopied] = useState(false);
-
-  const copyUPI = () => {
-    navigator.clipboard.writeText("studyspacerankers@upi");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <div className="space-y-6 max-w-lg">
@@ -27,12 +21,7 @@ const Contribute = () => {
       </motion.div>
 
       {/* Tab selector */}
-      <motion.div
-        className="flex gap-2 p-1 bg-muted rounded-xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-      >
+      <motion.div className="flex gap-2 p-1 bg-muted rounded-xl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
         <button
           onClick={() => setTab("materials")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
@@ -75,18 +64,15 @@ const Contribute = () => {
             <motion.a
               href="mailto:studyspacerankers@gmail.com?subject=Material Contribution"
               className="btn-gold text-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2 w-full"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             >
               <Mail className="w-4 h-4" /> Email Us to Contribute
             </motion.a>
             <motion.a
               href="https://t.me/freematerialjeeneet"
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 text-sm px-4 py-3 rounded-xl border hover:bg-muted transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             >
               <Send className="w-4 h-4" /> Or message on Telegram
             </motion.a>
@@ -101,6 +87,20 @@ const Contribute = () => {
             Rankers Star is 100% free and always will be. But running the platform costs money — hosting, storage, and more.
             Your donations help us keep the lights on and add more resources for students across India.
           </p>
+
+          {/* UPI QR Code Section */}
+          <div className="p-5 rounded-xl bg-muted/50 text-center space-y-3">
+            <div className="flex items-center justify-center gap-2 text-sm font-heading font-semibold">
+              <QrCode className="w-4 h-4 text-primary" /> Pay via UPI
+            </div>
+            <div className="w-48 h-48 mx-auto rounded-xl overflow-hidden border-2 border-primary/20 bg-card p-2">
+              <img src={upiQrImage} alt="UPI QR Code - Scan to donate" className="w-full h-full object-contain" />
+            </div>
+            <p className="text-xs text-muted-foreground">Scan QR code with any UPI app to donate</p>
+            <div className="flex items-center justify-center gap-2 text-sm">
+              <span className="font-mono text-foreground/80 bg-card px-3 py-1.5 rounded-lg border text-xs">studyspacerankers@upi</span>
+            </div>
+          </div>
 
           <div className="space-y-4 p-4 rounded-xl bg-muted/50">
             <p className="text-sm font-heading font-semibold">Every contribution matters!</p>
@@ -121,22 +121,19 @@ const Contribute = () => {
           </div>
 
           <div className="border-t pt-5 space-y-4">
-            <p className="text-sm font-heading font-semibold text-center">To donate, contact us:</p>
+            <p className="text-sm font-heading font-semibold text-center">Or contact us directly:</p>
             <motion.a
               href="mailto:studyspacerankers@gmail.com?subject=Donation Inquiry"
               className="btn-gold text-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2 w-full"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             >
               <Mail className="w-4 h-4" /> Email Us to Donate
             </motion.a>
             <motion.a
               href="https://t.me/freematerialjeeneet"
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 text-sm px-4 py-3 rounded-xl border hover:bg-muted transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             >
               <Send className="w-4 h-4" /> Message on Telegram
             </motion.a>

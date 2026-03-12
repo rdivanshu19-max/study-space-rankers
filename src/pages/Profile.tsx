@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { User, Save, Shield, Check, X, Download, BookOpen, Flame, Edit3, Camera } from "lucide-react";
-import { getProfile, saveProfile, getMaterials, getVault, getStreak } from "@/lib/store";
+import { getProfile, saveProfile, getVault, getStreak } from "@/lib/store";
+import { fetchMaterials } from "@/lib/supabase-materials";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -14,9 +15,13 @@ const Profile = () => {
   const [adminError, setAdminError] = useState("");
   const navigate = useNavigate();
 
-  const materials = getMaterials();
+  const [materials, setMaterials] = useState<any[]>([]);
   const vault = getVault();
   const streak = getStreak();
+
+  useEffect(() => {
+    fetchMaterials().then(setMaterials);
+  }, []);
 
   const handleSave = () => {
     const updated = { ...profile, name: name.trim(), bio: bio.trim() };

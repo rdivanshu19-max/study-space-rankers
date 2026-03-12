@@ -1,21 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Plus, Trash2, Pin, Star, Shield, Eye, EyeOff } from "lucide-react";
 import {
-  getMaterials, addMaterial, deleteMaterial, togglePin, saveMaterials,
-  getSettings, saveSettings, MATERIAL_TYPES, getProfile,
-} from "@/lib/store";
+  fetchMaterials, addMaterialDB, deleteMaterialDB, togglePinDB,
+  toggleMaterialRatingDB, fetchSettings, toggleGlobalRatingDB,
+  type Material, type AppSettings,
+} from "@/lib/supabase-materials";
+import { getProfile, MATERIAL_TYPES } from "@/lib/store";
 import { useNavigate } from "react-router-dom";
 
 const AdminPanel = () => {
   const profile = getProfile();
   const navigate = useNavigate();
-  const [materials, setMaterials] = useState(getMaterials());
-  const [settings, setSettings] = useState(getSettings());
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [settings, setSettings] = useState<AppSettings>({ ratingEnabled: true });
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [ratingEnabled, setRatingEnabled] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    const [mats, sets] = await Promise.all([fetchMaterials(), fetchSettings()]);
+    setMaterials(mats);
+    setSettings(sets);
+    setLoading(false);
+  };
 
   if (!profile.isAdmin) {
     return (
@@ -29,25 +44,25 @@ const AdminPanel = () => {
     );
   }
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !link.trim() || selectedTypes.length === 0) return;
-    addMaterial({ name: name.trim(), link: link.trim(), types: selectedTypes, pinned: false, ratingEnabled });
-    setMaterials(getMaterials());
+    await addMaterialDB({ name: name.trim(), link: link.trim(), types: selectedTypes, pinned: false, ratingEnabled });
     setName("");
     setLink("");
     setSelectedTypes([]);
     setRatingEnabled(true);
+    await loadData();
   };
 
-  const handleDelete = (id: string) => {
-    deleteMaterial(id);
-    setMaterials(getMaterials());
+  const handleDelete = async (id: string) => {
+    await deleteMaterialDB(id);
+    await loadData();
   };
 
-  const handleTogglePin = (id: string) => {
-    togglePin(id);
-    setMaterials(getMaterials());
+  const handleTogglePin = async (m: Material) => {
+    await togglePinDB(m.id, m.pinned);
+    await loadData();
   };
 
   const toggleType = (type: string) => {
@@ -56,19 +71,19 @@ const AdminPanel = () => {
     );
   };
 
-  const toggleGlobalRating = () => {
-    const updated = { ...settings, ratingEnabled: !settings.ratingEnabled };
-    saveSettings(updated);
-    setSettings(updated);
+  const handleToggleGlobalRating = async () => {
+    await toggleGlobalRatingDB(settings.ratingEnabled);
+    setSettings((s) => ({ ...s, ratingEnabled: !s.ratingEnabled }));
   };
 
-  const toggleMaterialRating = (id: string) => {
-    const mats = getMaterials();
-    const m = mats.find((x) => x.id === id);
-    if (m) m.ratingEnabled = !m.ratingEnabled;
-    saveMaterials(mats);
-    setMaterials(getMaterials());
+  const handleToggleMaterialRating = async (m: Material) => {
+    await toggleMaterialRatingDB(m.id, m.ratingEnabled);
+    await loadData();
   };
+
+  if (loading) {
+    return <div className="card-elevated p-12 text-center text-muted-foreground">Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -80,7 +95,7 @@ const AdminPanel = () => {
       {/* Global Settings */}
       <div className="card-elevated p-4 flex items-center justify-between">
         <span className="text-sm font-medium">Global Rating System</span>
-        <button onClick={toggleGlobalRating} className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg transition-colors ${settings.ratingEnabled ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+        <button onClick={handleToggleGlobalRating} className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg transition-colors ${settings.ratingEnabled ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
           {settings.ratingEnabled ? <><Eye className="w-4 h-4" /> Enabled</> : <><EyeOff className="w-4 h-4" /> Disabled</>}
         </button>
       </div>
@@ -134,10 +149,10 @@ const AdminPanel = () => {
               <p className="text-xs text-muted-foreground">{m.types.join(", ")}</p>
             </div>
             <div className="flex items-center gap-1 shrink-0">
-              <button onClick={() => toggleMaterialRating(m.id)} className={`p-1.5 rounded ${m.ratingEnabled ? "text-primary" : "text-muted-foreground"}`} title="Toggle rating">
+              <button onClick={() => handleToggleMaterialRating(m)} className={`p-1.5 rounded ${m.ratingEnabled ? "text-primary" : "text-muted-foreground"}`} title="Toggle rating">
                 <Star className="w-4 h-4" />
               </button>
-              <button onClick={() => handleTogglePin(m.id)} className={`p-1.5 rounded ${m.pinned ? "text-primary" : "text-muted-foreground"}`} title="Toggle pin">
+              <button onClick={() => handleTogglePin(m)} className={`p-1.5 rounded ${m.pinned ? "text-primary" : "text-muted-foreground"}`} title="Toggle pin">
                 <Pin className="w-4 h-4" />
               </button>
               <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded text-destructive" title="Delete">

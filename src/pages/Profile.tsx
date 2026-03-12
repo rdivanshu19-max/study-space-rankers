@@ -15,9 +15,13 @@ const Profile = () => {
   const [adminError, setAdminError] = useState("");
   const navigate = useNavigate();
 
-  const materials = getMaterials();
+  const [materials, setMaterials] = useState<any[]>([]);
   const vault = getVault();
   const streak = getStreak();
+
+  useEffect(() => {
+    fetchMaterials().then(setMaterials);
+  }, []);
 
   const handleSave = () => {
     const updated = { ...profile, name: name.trim(), bio: bio.trim() };

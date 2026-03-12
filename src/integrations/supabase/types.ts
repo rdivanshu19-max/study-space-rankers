@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      app_settings: {
+        Row: {
+          id: string
+          key: string
+          value: Json
+        }
+        Insert: {
+          id?: string
+          key: string
+          value?: Json
+        }
+        Update: {
+          id?: string
+          key?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      materials: {
+        Row: {
+          created_at: string
+          id: string
+          link: string
+          name: string
+          pinned: boolean
+          rating_enabled: boolean
+          ratings: number[]
+          types: string[]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link: string
+          name: string
+          pinned?: boolean
+          rating_enabled?: boolean
+          ratings?: number[]
+          types?: string[]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string
+          name?: string
+          pinned?: boolean
+          rating_enabled?: boolean
+          ratings?: number[]
+          types?: string[]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,1 +1,4 @@
 project_id = "wiqqseqraputnjizroks"
+
+[functions.ranker-pulse-chat]
+verify_jwt = false

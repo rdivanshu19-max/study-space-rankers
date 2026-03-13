@@ -509,9 +509,9 @@ const Landing = () => {
             <div>
               <h4 className="font-heading font-semibold text-secondary-foreground mb-4">Legal</h4>
               <ul className="space-y-3 text-sm text-secondary-foreground/60">
-                <li><a href="/terms" className="hover:text-primary transition-colors">Terms & Conditions</a></li>
-                <li><a href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="/adsense-disclaimer" className="hover:text-primary transition-colors">AdSense Disclaimer</a></li>
+                <li><Link to="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
+                <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/adsense-disclaimer" className="hover:text-primary transition-colors">AdSense Disclaimer</Link></li>
               </ul>
             </div>
           </div>

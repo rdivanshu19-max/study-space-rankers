@@ -41,6 +41,7 @@ const App = () => (
             <Route path="admin" element={<AdminPanel />} />
             <Route path="about" element={<AppAbout />} />
             <Route path="contribute" element={<Contribute />} />
+            <Route path="test" element={<AITest />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

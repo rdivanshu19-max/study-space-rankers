@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Star, BookOpen, GraduationCap, Users, Target, ArrowRight, Send, Mail, Library, Sparkles, Trophy, Clock, Shield, Heart, Zap, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/rankers-star-logo.png";
 
@@ -509,9 +509,9 @@ const Landing = () => {
             <div>
               <h4 className="font-heading font-semibold text-secondary-foreground mb-4">Legal</h4>
               <ul className="space-y-3 text-sm text-secondary-foreground/60">
-                <li><a href="/terms" className="hover:text-primary transition-colors">Terms & Conditions</a></li>
-                <li><a href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="/adsense-disclaimer" className="hover:text-primary transition-colors">AdSense Disclaimer</a></li>
+                <li><Link to="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
+                <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/adsense-disclaimer" className="hover:text-primary transition-colors">AdSense Disclaimer</Link></li>
               </ul>
             </div>
           </div>

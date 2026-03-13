@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { getProfile, getTheme, saveTheme, initTheme } from "@/lib/store";
 import logo from "@/assets/rankers-star-logo.png";
+import RankerPulseChat from "@/components/RankerPulseChat";
 
 const navItems = [
   { title: "Dashboard", url: "/app", icon: LayoutDashboard },
@@ -147,6 +148,7 @@ const AppLayout = () => {
           <Outlet />
         </main>
       </div>
+      <RankerPulseChat />
     </div>
   );
 };

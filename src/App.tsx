@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
 import AppAbout from "./pages/AppAbout";
 import Contribute from "./pages/Contribute";
+import AITest from "./pages/AITest";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import AdSenseDisclaimer from "./pages/AdSenseDisclaimer";

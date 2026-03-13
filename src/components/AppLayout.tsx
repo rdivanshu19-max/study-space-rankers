@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import {
   LayoutDashboard, Library, Vault, User, Info, Heart, Moon, Sun, Send, Star, Menu,
-  Shield,
+  Shield, GraduationCap,
 } from "lucide-react";
 import { getProfile, getTheme, saveTheme, initTheme } from "@/lib/store";
 import logo from "@/assets/rankers-star-logo.png";
@@ -11,6 +11,7 @@ import RankerPulseChat from "@/components/RankerPulseChat";
 const navItems = [
   { title: "Dashboard", url: "/app", icon: LayoutDashboard },
   { title: "Rankers Library", url: "/app/library", icon: Library },
+  { title: "AI Test", url: "/app/test", icon: GraduationCap },
   { title: "Study Vault", url: "/app/vault", icon: Vault },
   { title: "Profile", url: "/app/profile", icon: User },
   { title: "About", url: "/app/about", icon: Info },

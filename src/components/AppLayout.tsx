@@ -148,6 +148,7 @@ const AppLayout = () => {
           <Outlet />
         </main>
       </div>
+      <RankerPulseChat />
     </div>
   );
 };

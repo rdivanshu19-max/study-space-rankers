@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Star, BookOpen, GraduationCap, Users, Target, ArrowRight, Send, Mail, Library, Sparkles, Trophy, Clock, Shield, Heart, Zap, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/rankers-star-logo.png";
 

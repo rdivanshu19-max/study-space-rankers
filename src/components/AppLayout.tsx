@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import {
   LayoutDashboard, Library, Vault, User, Info, Heart, Moon, Sun, Send, Star, Menu,
-  Shield,
+  Shield, GraduationCap,
 } from "lucide-react";
 import { getProfile, getTheme, saveTheme, initTheme } from "@/lib/store";
 import logo from "@/assets/rankers-star-logo.png";

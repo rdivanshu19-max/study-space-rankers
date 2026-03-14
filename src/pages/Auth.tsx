@@ -9,6 +9,7 @@ import logo from "@/assets/rankers-star-logo.png";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgot, setIsForgot] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,13 @@ const Auth = () => {
     setMessage("");
     setLoading(true);
 
-    if (isLogin) {
+    if (isForgot) {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) setError(error.message);
+      else setMessage("Password reset link sent to your email!");
+    } else if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setError(error.message);
     } else {
@@ -119,21 +126,23 @@ const Auth = () => {
               className="w-full pl-10 pr-4 py-3 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
             />
           </div>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-              minLength={6}
-              className="w-full pl-10 pr-4 py-3 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
-            />
-          </div>
+          {!isForgot && (
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+                minLength={6}
+                className="w-full pl-10 pr-4 py-3 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
+              />
+            </div>
+          )}
 
           {error && <p className="text-destructive text-xs">{error}</p>}
-          {message && <p className="text-emerald-600 text-xs">{message}</p>}
+          {message && <p className="text-primary text-xs">{message}</p>}
 
           <button
             type="submit"
@@ -145,12 +154,30 @@ const Auth = () => {
             ) : (
               <>
                 <Star className="w-4 h-4" />
-                {isLogin ? "Sign In" : "Create Account"}
+                {isForgot ? "Send Reset Link" : isLogin ? "Sign In" : "Create Account"}
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
+
+        {isLogin && !isForgot && (
+          <button
+            onClick={() => { setIsForgot(true); setError(""); setMessage(""); }}
+            className="text-xs text-muted-foreground hover:text-primary mt-2 transition-colors"
+          >
+            Forgot password?
+          </button>
+        )}
+
+        {isForgot && (
+          <button
+            onClick={() => { setIsForgot(false); setError(""); setMessage(""); }}
+            className="text-xs text-muted-foreground hover:text-primary mt-2 transition-colors"
+          >
+            ← Back to Sign In
+          </button>
+        )}
 
         <p className="text-sm text-muted-foreground mt-4">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}

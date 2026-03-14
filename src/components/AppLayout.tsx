@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import {
   LayoutDashboard, Library, Vault, User, Info, Heart, Moon, Sun, Send, Star, Menu,
-  Shield, GraduationCap,
+  Shield, GraduationCap, LogOut,
 } from "lucide-react";
-import { getProfile, getTheme, saveTheme, initTheme } from "@/lib/store";
+import { useAuth } from "@/hooks/useAuth";
+import { getTheme, saveTheme, initTheme } from "@/lib/store";
 import logo from "@/assets/rankers-star-logo.png";
 import RankerPulseChat from "@/components/RankerPulseChat";
 
@@ -21,22 +22,32 @@ const navItems = [
 const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const profile = getProfile();
+  const { user, loading, signOut } = useAuth();
   const [theme, setTheme] = useState<"light" | "dark">(getTheme());
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     initTheme();
-    if (!profile.name) {
-      navigate("/enter", { replace: true });
-    }
   }, []);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth", { replace: true });
+    }
+  }, [user, loading, navigate]);
 
   const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     saveTheme(next);
   };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split("@")[0] || "Student";
 
   const isActive = (path: string) => {
     if (path === "/app") return location.pathname === "/app";
@@ -49,6 +60,8 @@ const AppLayout = () => {
         ? "sidebar-active"
         : "text-sidebar-foreground hover:bg-sidebar-accent"
     }`;
+
+  if (loading) return null;
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -69,14 +82,6 @@ const AppLayout = () => {
               {item.title}
             </button>
           ))}
-          {profile.isAdmin && (
-            <button
-              onClick={() => navigate("/app/admin")}
-              className={navBtnClass("/app/admin")}
-            >
-              <Shield className="w-4 h-4" /> Admin Panel
-            </button>
-          )}
         </nav>
         <div className="p-3 border-t border-sidebar-border space-y-2">
           <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200">
@@ -91,6 +96,9 @@ const AppLayout = () => {
           >
             <Send className="w-4 h-4" /> Telegram
           </a>
+          <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200">
+            <LogOut className="w-4 h-4" /> Sign Out
+          </button>
         </div>
       </aside>
 
@@ -114,19 +122,14 @@ const AppLayout = () => {
                   {item.title}
                 </button>
               ))}
-              {profile.isAdmin && (
-                <button
-                  onClick={() => { navigate("/app/admin"); setSidebarOpen(false); }}
-                  className={navBtnClass("/app/admin")}
-                >
-                  <Shield className="w-4 h-4" /> Admin Panel
-                </button>
-              )}
             </nav>
             <div className="p-3 border-t border-sidebar-border space-y-2">
               <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200">
                 {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 {theme === "light" ? "Dark Mode" : "Light Mode"}
+              </button>
+              <button onClick={() => { handleSignOut(); setSidebarOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200">
+                <LogOut className="w-4 h-4" /> Sign Out
               </button>
             </div>
           </aside>
@@ -142,7 +145,7 @@ const AppLayout = () => {
           <div className="flex-1" />
           <div className="flex items-center gap-2">
             <Star className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium">{profile.name}</span>
+            <span className="text-sm font-medium">{displayName}</span>
           </div>
         </header>
         <main className="flex-1 p-4 md:p-6 overflow-auto">

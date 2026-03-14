@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "./pages/Landing";
-import EnterName from "./pages/EnterName";
+import Auth from "./pages/Auth";
 import AppLayout from "./components/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import RankersLibrary from "./pages/RankersLibrary";

@@ -161,7 +161,7 @@ const Landing = () => {
             transition={{ delay: 1 }}
           >
             <motion.button
-              onClick={() => navigate("/enter")}
+              onClick={() => navigate("/auth")}
               className="btn-gold text-lg px-12 py-5 rounded-2xl inline-flex items-center justify-center gap-3 relative overflow-hidden group"
               whileHover={{ scale: 1.05, boxShadow: "0 8px 30px -4px hsl(48 96% 53% / 0.5)" }}
               whileTap={{ scale: 0.98 }}

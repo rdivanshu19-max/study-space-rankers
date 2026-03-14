@@ -467,7 +467,7 @@ const Landing = () => {
             Join thousands of students who are already using Rankers Star to prepare for their exams. It's completely free!
           </motion.p>
           <motion.button
-            onClick={() => navigate("/enter")}
+            onClick={() => navigate("/auth")}
             className="btn-gold text-xl px-14 py-5 rounded-2xl inline-flex items-center gap-3 relative overflow-hidden group"
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={2}
             whileHover={{ scale: 1.05, boxShadow: "0 8px 30px -4px hsl(48 96% 53% / 0.5)" }}
